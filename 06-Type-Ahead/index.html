@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Type Ahead 👀</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <form class="search-form">
+      <input type="text" class="search" placeholder="City or State" />
+      <ul class="suggestions">
+        <li>Filter for a city</li>
+        <li>or a state</li>
+      </ul>
+    </form>
+    <script>
+      const endpoint =
+        'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+
+      const cities = [];
+      fetch(endpoint)
+        .then((blob) => blob.json())
+        .then((data) => cities.push(...data));
+
+      // Blob 객체는 파일류의 불변하는 미가공 데이터를 나타냅니다
+      // 여기서 blob은 그냥 상징적으로 써주는 것인지 ?
+
+      // 사용자가 입력한 단어가 데이터 중에 있는지 판단하는 함수
+      function findMatches(wordToMatch, cities) {
+        return cities.filter((place) => {
+          const regex = new RegExp(wordToMatch, 'gi');
+          return place.city.match(regex) || place.state.match(regex);
+        });
+      }
+      // match() : 정규표현식에 맞는 문자열을 찾아서 배열 객체로 반환
+
+      // 정규표현식 gi
+      // global match(g): 발생할 모든 pattern에 대한 전역 검색
+      // ignore case(i): 대/소문자 구분 안함
+
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
+      // ??????? 이건 잘 모르겠다
+
+      function displayMatches() {
+        // 여기 this.value가 너무 헷갈린다 🥲
+        const matchArray = findMatches(this.value, cities);
+        const html = matchArray
+          .map((place) => {
+            const regex = new RegExp(this.value, 'gi'); // 여기서 이거의 역할이 뭔지....
+            const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+            const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`);
+            return `
+              <li>
+                <span class="name">${cityName}, ${stateName}</span>
+                <span class="population">${numberWithCommas(place.population)}</span>
+              </li>
+            `;
+          })
+          .join('');
+        suggestions.innerHTML = html;
+      }
+
+      const searchInput = document.querySelector('.search');
+      const suggestions = document.querySelector('.suggestions');
+
+      searchInput.addEventListener('change', displayMatches);
+      searchInput.addEventListener('keyup', displayMatches);
+      // 왜 이벤트를 change로 달아주는건지 궁금...! 다른 것을 사용할 수는 없는건지?
+    </script>
+  </body>
+</html>
