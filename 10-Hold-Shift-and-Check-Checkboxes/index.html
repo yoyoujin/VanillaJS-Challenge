@@ -98,12 +98,10 @@
       let lastChecked;
 
       function handleCheck(e) {
-        // Check if they had the shift key down
-        // AND check that they are checking it
         let inBetween = false;
+
+        // 이벤트가 발생할 때 Shift 키를 눌렀는지(true) 또는 눌리지 않았는지(false) 나타내는 부울 값
         if (e.shiftKey && this.checked) {
-          // go ahead and do what we please
-          // loop over every single checkbox
           checkboxes.forEach((checkbox) => {
             console.log(checkbox);
             if (checkbox === this || checkbox === lastChecked) {
@@ -126,3 +124,4 @@
 </html>
 
 https://mjn9ine.tistory.com/entry/JS-%F0%9F%97%93%EF%B8%8FJavaScript-30-Day-10
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/shiftKey

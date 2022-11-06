@@ -18,9 +18,21 @@
         'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
       const cities = [];
+
+      // fetch-then 은 사용순서를 보장하지 않ㄴ음
       fetch(endpoint)
         .then((blob) => blob.json())
         .then((data) => cities.push(...data));
+
+      // top-level await 사용해서 순서 보장하기
+      // const getCities = async () => {
+      //   const list = await fetch(endpoint).then((blob) => blob.json());
+      //   console.log(list);
+
+      //   return list;
+      // };
+
+      const cities = getCities();
 
       // Blob 객체는 파일류의 불변하는 미가공 데이터를 나타냅니다
       // 여기서 blob은 그냥 상징적으로 써주는 것인지 ?
